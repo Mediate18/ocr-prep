@@ -32,46 +32,35 @@ public class ImagePreparation extends OCRTool {
 		PageImage[] images = image.splitVertical2AndSave();
 		for (int i = 0; i < images.length; i++) {
 			String fileName = images[i].getFileName();
+			generatedFiles.add(fileName);
 			LOGGER.info("Processing file "+fileName);
 			if (this.increaseContrast > 0) {
 				LOGGER.info("* Increasing contrast");
-				String oldName = images[i].getFileName();
 				for (int j = 0; j < this.increaseContrast; j++)
 					images[i].contrastImage(true);
-				if (this.saveAllFiles) {
-					images[i].setFileName(images[i].generateFilename("contrast"));
-					images[i].writeImage(new ImageInfo(fileName));
-				} else {
-					File file = new File(oldName);
-					file.delete();
-				}
+				String newFileName = images[i].generateFilename("contrast");
+				images[i].setFileName(newFileName);
+				images[i].writeImage(new ImageInfo(fileName));
+				generatedFiles.add(newFileName);
 			}
 			LOGGER.info("* Correcting skew");
 			PageImage rlsaImage = images[i].generateRLSAImage(true).generateRLSAImage(false);
-			if (!this.saveAllFiles) {
-				File file = new File(rlsaImage.getFileName());
-				file.delete();
-				file = new File(images[i].getFileName());
-				if (file.exists())
-					file.delete();
-			}
+			generatedFiles.add(rlsaImage.getFileName());
 			double deg = rlsaImage.getSkewDegrees();
 			if (deg == 0.0)
 				LOGGER.info("-> Image is not skewed");
 			else {
-				if (this.saveAllFiles) {
-					rlsaImage = rlsaImage.rotateAndSave(deg);
-					images[i] = images[i].rotateAndSave(deg);
-				} else {
-					rlsaImage = rlsaImage.rotate(deg);
-					images[i] = images[i].rotate(deg);
-				}
+				rlsaImage = rlsaImage.rotateAndSave(deg);
+				generatedFiles.add(rlsaImage.getFileName());
+				images[i] = images[i].rotateAndSave(deg);
+				generatedFiles.add(images[i].getFileName());
 			}
 			LOGGER.info("* Cropping to margins");
 			Rectangle margins = rlsaImage.getMargins();
-			if (this.saveAllFiles)
-				rlsaImage.cropAndSave(margins);
+			rlsaImage = rlsaImage.cropAndSave(margins);
+			generatedFiles.add(rlsaImage.getFileName());
 			images[i] = images[i].cropAndSave(margins);
+			
 			LOGGER.info("* Extracting lines");
 			String base = FilenameUtils.getBaseName(fileName);
 			String ext = FilenameUtils.getExtension(fileName);
@@ -87,6 +76,7 @@ public class ImagePreparation extends OCRTool {
 				String newFileName = linePath+"/line"+jj+"."+ext;
 				ImageIO.write(line, ext, new File(newFileName));
 			}
+			this.finish();
 		}
 	}
 

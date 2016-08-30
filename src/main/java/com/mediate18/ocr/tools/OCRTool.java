@@ -32,6 +32,7 @@ public abstract class OCRTool {
 	protected static ZipFile fis;
 	protected int increaseContrast = 0;
 	protected boolean saveAllFiles = false;
+	protected List<String> generatedFiles = new ArrayList<String>();
 
 	protected void start(String[] args) throws IOException, MagickException {
 		if (args.length > 1) {
@@ -89,5 +90,15 @@ public abstract class OCRTool {
 	}
 	
 	protected abstract void run(PageImage image) throws MagickException, IOException;
+	
+	protected void finish() {
+		if (!this.saveAllFiles) {
+			for (String file : generatedFiles) {
+				File f = new File(file);
+				if (f.exists())
+					f.delete();
+			}
+		}
+	}
 
 }
