@@ -24,9 +24,9 @@ public class RLSA {
 		try {
 			File jarPath = new File(RLSA.class.getProtectionDomain().getCodeSource().getLocation().getPath());
 	        String propertiesPath = jarPath.getParentFile().getAbsolutePath();
-	        File customPropFile = new File(propertiesPath+"/rlsa.properties");
+	        File customPropFile = new File(propertiesPath+"/ocr-prep.properties");
 	        if (customPropFile.exists() && customPropFile.canRead())
-	        	input = new FileInputStream(propertiesPath+"/rlsa.properties");
+	        	input = new FileInputStream(customPropFile);
 	        else
 	        	input = getClass().getClassLoader().getResourceAsStream("rlsa.properties");
 			prop.load(input);

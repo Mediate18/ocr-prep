@@ -26,9 +26,9 @@ public class ImageSplitter {
 		try {
 			File jarPath = new File(RLSA.class.getProtectionDomain().getCodeSource().getLocation().getPath());
 	        String propertiesPath = jarPath.getParentFile().getAbsolutePath();
-	        File customPropFile = new File(propertiesPath+"/imagesplitter.properties");
+	        File customPropFile = new File(propertiesPath+"/ocr-prep.properties");
 	        if (customPropFile.exists() && customPropFile.canRead())
-	        	input = new FileInputStream(propertiesPath+"/imagesplitter.properties");
+	        	input = new FileInputStream(customPropFile);
 	        else
 	        	input = getClass().getClassLoader().getResourceAsStream("imagesplitter.properties");
 			prop.load(input);
