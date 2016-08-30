@@ -10,7 +10,7 @@ import magick.MagickException;
 public class MarginDetector {
 	
 	public static Rectangle detect(PageImage image) throws MagickException, IOException {
-		int[][] pixels = image.generateRLSAImage(true).generateRLSAImage(false).getPixelMap();
+		int[][] pixels = image.getPixelMap();
 		Double[] rowArr = PixelMapUtils.getPercentageArray(pixels, 0.05);
 		int YfirstBlockIndex = PixelMapUtils.getFirstBlockIndex(rowArr,pixels[0].length);
 		int YlowestBeforeFirstBlockIndex = PixelMapUtils.getLowestBeforeFirstBlockIndex(rowArr, YfirstBlockIndex);
