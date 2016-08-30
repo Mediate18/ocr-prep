@@ -1,5 +1,6 @@
 package com.mediate18.ocr.tools;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.logging.Logger;
 
@@ -28,11 +29,15 @@ public class RunLengthSmoothing extends OCRTool {
 			LOGGER.info("Processing file "+fileName);
 			if (this.increaseContrast > 0) {
 				LOGGER.info("* Increasing contrast");
+				String oldName = images[i].getFileName();
 				for (int j = 0; j < this.increaseContrast; j++)
 					images[i].contrastImage(true);
 				if (this.saveAllFiles) {
 					images[i].setFileName(images[i].generateFilename("contrast"));
 					images[i].writeImage(new ImageInfo(fileName));
+				} else {
+					File file = new File(oldName);
+					file.delete();
 				}
 			}
 			images[i].generateRLSAImage(true).generateRLSAImage(false);

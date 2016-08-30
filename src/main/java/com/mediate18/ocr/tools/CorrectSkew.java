@@ -29,11 +29,15 @@ public class CorrectSkew extends OCRTool {
 			LOGGER.info("Processing file "+fileName);
 			if (this.increaseContrast > 0) {
 				LOGGER.info("* Increasing contrast");
+				String oldName = images[i].getFileName();
 				for (int j = 0; j < this.increaseContrast; j++)
 					images[i].contrastImage(true);
 				if (this.saveAllFiles) {
 					images[i].setFileName(images[i].generateFilename("contrast"));
 					images[i].writeImage(new ImageInfo(fileName));
+				} else {
+					File file = new File(oldName);
+					file.delete();
 				}
 			}
 			LOGGER.info("* Correcting skew");
@@ -41,6 +45,9 @@ public class CorrectSkew extends OCRTool {
 			if (!this.saveAllFiles) {
 				File file = new File(rlsaImage.getFileName());
 				file.delete();
+				file = new File(images[i].getFileName());
+				if (file.exists())
+					file.delete();
 			}
 			double deg = rlsaImage.getSkewDegrees();
 			if (deg == 0.0)
