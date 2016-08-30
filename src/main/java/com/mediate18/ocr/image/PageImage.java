@@ -177,8 +177,6 @@ public class PageImage extends MagickImage {
 		if (margins == null)
 			margins = this.getMargins();
 		BufferedImage src = this.toBufferedImage();
-//		Dimension dim = this.getDimension();
-//		System.out.println("x: "+margins.x+", y: "+margins.y+", w: "+margins.width+" ("+dim.width+"), h: "+margins.height+" ("+dim.height+")");
 		BufferedImage img = src.getSubimage(margins.x, margins.y, margins.width, margins.height);
 		BufferedImage copyOfImage = new BufferedImage(img.getWidth(), img.getHeight(), BufferedImage.TYPE_INT_RGB);
 		Graphics g = copyOfImage.createGraphics();
