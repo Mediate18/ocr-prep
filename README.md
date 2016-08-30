@@ -4,8 +4,8 @@ This application offers some basic functionality to prepare images for further p
 The application requires [ImageMagick](http://www.imagemagick.org), Java 1.5 or up, and [Apache Maven](https://maven.apache.org).
 
 ### Functionality currently included
-- **Contrast correction**: all of the tools included have a command line option for setting the contrast level;
-- **Page splitting**: all of the tools included split an image in two if the width of the input image exceeds the height;
+- **Contrast correction**: all of the tools included, except SplitLines, have a command line option for setting the contrast level;
+- **Page splitting**: all of the tools included, except SplitLines, split an image in two if the width of the input image exceeds the height;
 - **Skew correction**: correct rotation of input image;
 - **Margin correction**: crop the image to only the section containing the text;
 - **Line splitting**: split a block of text into images of the separate lines;
