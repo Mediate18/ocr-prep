@@ -205,6 +205,15 @@ public class PageImage extends MagickImage {
 		return new PageImage(fileName);
 	}
 	
+	public PageImage[] splitVertical2() throws MagickException, IOException {
+		ImageSplitter splitter = new ImageSplitter();
+		PageImage[] pages = splitter.splitVertical(this); // split image
+		for (int i = 0; i < pages.length; i++) {
+			pages[i].setFileName(this.generateFilename("split"+i)); //give new location
+		}
+		return pages;
+	}
+	
 	public PageImage[] splitVertical2AndSave() throws MagickException, IOException {
 		ImageSplitter splitter = new ImageSplitter();
 		PageImage[] pages = splitter.splitVertical(this); // split image
