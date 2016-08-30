@@ -19,7 +19,7 @@ public class SplitLines extends OCRTool {
 
 	public static void main(String[] args) throws MagickException, IOException {
 		if (args.length == 0)
-			LOGGER.severe("No input file provided! It can be either a single image file or a folder containing multiple images.");
+			LOGGER.severe("No input file provided! It can be either a single image file or a folder or Zip file containing multiple images.");
 		else {
 			SplitLines processor = new SplitLines();
 			processor.start(args);
