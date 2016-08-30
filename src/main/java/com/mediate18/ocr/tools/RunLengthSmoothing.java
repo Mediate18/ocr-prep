@@ -22,13 +22,20 @@ public class RunLengthSmoothing extends OCRTool {
 
 	@Override
 	protected void run(PageImage image) throws MagickException, IOException {
-		PageImage[] images = image.splitVertical2AndSave();
+		PageImage[] images = this.saveAllFiles ? image.splitVertical2AndSave() : image.splitVertical2();
 		for (int i = 0; i < images.length; i++) {
-			images[i].contrastImage(false);
-			String oldName = images[i].getFileName();
-			images[i].setFileName(images[i].generateFilename("contrast"));
-			images[i].writeImage(new ImageInfo(oldName));
-			images[i].generateRLSAImage(true).generateRLSAImage(false).getPixelMap();
+			String fileName = images[i].getFileName();
+			LOGGER.info("Processing file "+fileName);
+			if (this.increaseContrast > 0) {
+				LOGGER.info("* Increasing contrast");
+				for (int j = 0; j < this.increaseContrast; j++)
+					images[i].contrastImage(true);
+				if (this.saveAllFiles) {
+					images[i].setFileName(images[i].generateFilename("contrast"));
+					images[i].writeImage(new ImageInfo(fileName));
+				}
+			}
+			images[i].generateRLSAImage(true).generateRLSAImage(false);
 		}
 	}
 

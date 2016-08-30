@@ -29,7 +29,7 @@ public class ImagePreparation extends OCRTool {
 
 	@Override
 	protected void run(PageImage image) throws MagickException, IOException {
-		PageImage[] images = image.splitVertical2AndSave();
+		PageImage[] images = this.saveAllFiles ? image.splitVertical2AndSave() : image.splitVertical2();
 		for (int i = 0; i < images.length; i++) {
 			String fileName = images[i].getFileName();
 			LOGGER.info("Processing file "+fileName);
