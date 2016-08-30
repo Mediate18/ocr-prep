@@ -76,11 +76,15 @@ public abstract class OCRTool {
 
 	protected void processZipFile(String path) throws IOException, MagickException {
 		fis = new ZipFile(path);
+		String folder = FilenameUtils.getFullPath(path);
 		for (Enumeration<?> e = fis.entries(); e.hasMoreElements();) {
 			ZipEntry entry = (ZipEntry) e.nextElement();
 			InputStream in = fis.getInputStream(entry);
 			BufferedImage bf = ImageIO.read(in);
-			run(PageImage.fromBufferedImage(bf));
+			PageImage image = PageImage.fromBufferedImage(bf);
+			String fileName = entry.getName();
+			image.setFileName(folder+fileName);
+			run(image);
 		}
 	}
 	
