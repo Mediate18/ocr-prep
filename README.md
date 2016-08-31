@@ -19,7 +19,7 @@ The application requires [ImageMagick](http://www.imagemagick.org), Java 1.5 or 
 ## Installation
 
 Make sure you have [ImageMagick](http://www.imagemagick.org/script/binary-releases.php), [Java](https://www.java.com/en/download/help/download_options.xml), and [Apache Maven](https://maven.apache.org/install.html) installed on your system. Then download or clone this repository and descend into its main folder.
-Execute the following command to build the application:
+Execute the following command to build the application (the $ denotes the terminal and is not part of the command):
 
 ```
 $ mvn package
