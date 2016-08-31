@@ -2,7 +2,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>mediate18</groupId>
 	<artifactId>ocr-prep</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.0.2-SNAPSHOT</version>
 	<name>OCR-preprocessing</name>
 	<description>Tools for OCR preprocessing</description>
 	<dependencies>
