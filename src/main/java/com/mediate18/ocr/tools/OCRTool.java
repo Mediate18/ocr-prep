@@ -1,12 +1,15 @@
 package com.mediate18.ocr.tools;
 
 import java.awt.image.BufferedImage;
+import java.io.BufferedInputStream;
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
+import java.util.logging.Logger;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
@@ -19,6 +22,7 @@ import com.mediate18.ocr.image.PageImage;
 import magick.MagickException;
 
 public abstract class OCRTool {
+	private static final Logger LOGGER = Logger.getLogger( OCRTool.class.getName() );
 	protected static List<String> ALLOWED = new ArrayList<String>() {/**
 		 * 
 		 */
@@ -65,9 +69,9 @@ public abstract class OCRTool {
 			String ext = FilenameUtils.getExtension(inputFileName);
     		if (ALLOWED.contains(ext))
     			if (ext.equals("zip"))
-    				this.processZipFile(inputFileName);
+    				this.processZipFile(inputFile.getAbsolutePath());
     			else
-    				this.processImageFile(inputFileName);
+    				this.processImageFile(inputFile.getAbsolutePath());
 		}
 	}
 	
@@ -80,13 +84,45 @@ public abstract class OCRTool {
 		String folder = FilenameUtils.getFullPath(path);
 		for (Enumeration<?> e = fis.entries(); e.hasMoreElements();) {
 			ZipEntry entry = (ZipEntry) e.nextElement();
-			InputStream in = fis.getInputStream(entry);
-			BufferedImage bf = ImageIO.read(in);
-			PageImage image = PageImage.fromBufferedImage(bf);
 			String fileName = entry.getName();
-			image.setFileName(folder+fileName);
-			run(image);
+			String filePath = folder+fileName;
+			String ext = FilenameUtils.getExtension(filePath);
+			if (!fileName.startsWith("_") && !fileName.startsWith(".") && ALLOWED.contains(ext) && !ext.equals("zip")) {
+				LOGGER.info("Image file: "+filePath);
+				InputStream in = this.getEntry(entry);
+				BufferedImage bf = ImageIO.read(in);
+				File outputFile = new File(filePath);
+				ImageIO.write(bf, ext, outputFile);
+				this.generatedFiles.add(filePath);
+				PageImage image = new PageImage(filePath);
+				image.setFileName(filePath);
+				run(image);
+			}
 		}
+	}
+	
+	private ByteArrayInputStream getEntry(ZipEntry entry) throws IOException {
+	    int entrySize = (int)entry.getSize();
+        BufferedInputStream bis = new BufferedInputStream(fis.getInputStream(entry));
+        byte[] finalByteArray = new byte[entrySize];
+        int bufferSize = 2048;
+        byte[] buffer = new byte[2048];
+        int chunkSize = 0;
+        int bytesRead = 0;
+        while (true) {
+            //Read chunk to buffer
+            chunkSize = bis.read(buffer, 0, bufferSize); //read() returns the number of bytes read
+            if (chunkSize == -1) {
+                //read() returns -1 if the end of the stream has been reached
+                break;
+            }
+            //Write that chunk to the finalByteArray
+            //System.arraycopy(src, srcPos, dest, destPos, length)
+            System.arraycopy(buffer, 0, finalByteArray, bytesRead, chunkSize);
+            bytesRead += chunkSize;
+        }
+        bis.close(); //close BufferedInputStream
+        return new ByteArrayInputStream(finalByteArray);
 	}
 	
 	protected abstract void run(PageImage image) throws MagickException, IOException;

@@ -6,7 +6,6 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
-import java.awt.image.DataBuffer;
 import java.awt.image.DataBufferByte;
 import java.io.File;
 import java.io.IOException;
@@ -262,19 +261,6 @@ public class PageImage extends MagickImage {
 		}
 		return baseDir + "/" + basename + "." + modifier + "." + ext;
 		
-	}
-	
-	public static PageImage fromBufferedImage(BufferedImage image) throws MagickException {
-		Object data = null;
-		int w = image.getWidth();
-		int h = image.getHeight();
-		MagickImage original = new MagickImage();
-		DataBuffer buff = image.getRaster().getDataBuffer();
-		if(buff.getDataType() == DataBuffer.TYPE_BYTE) {
-			data = ((DataBufferByte) image.getRaster().getDataBuffer()).getData();
-			original.constituteImage(w,h,"RGB",(byte[]) data);
-		}
-		return new PageImage(original);
 	}
 
 }
