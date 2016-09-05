@@ -1,7 +1,7 @@
 # OCR image preparation
 
 This application offers some basic functionality to prepare images for further processing with OCR (Optical Character Recognition) software. It is specifically intended for preprocessing of scanned book pages and runs on single image files (PNG or JPEG), whole directories, or even a Zip file containing images.
-The application requires [ImageMagick](http://www.imagemagick.org), Java 1.5 or up, and [Apache Maven](https://maven.apache.org).
+The application requires [ImageMagick](http://www.imagemagick.org), Java 1.5 or up, [Apache Maven](https://maven.apache.org), and [JMagick](http://www.jmagick.org/).
 
 ### Functionality currently included
 - **Contrast correction**: all of the tools included, except SplitLines, have a command line option for setting the contrast level;
@@ -18,7 +18,12 @@ The application requires [ImageMagick](http://www.imagemagick.org), Java 1.5 or 
 
 ## Installation
 
-Make sure you have [ImageMagick](http://www.imagemagick.org/script/binary-releases.php), [Java](https://www.java.com/en/download/help/download_options.xml), and [Apache Maven](https://maven.apache.org/install.html) installed on your system. Then download or clone this repository and descend into its main folder.
+Make sure you have [ImageMagick](http://www.imagemagick.org/script/binary-releases.php), [Java](https://www.java.com/en/download/help/download_options.xml), and [Apache Maven](https://maven.apache.org/install.html) installed on your system.
+Next, download and install the latest version of [JMagick](http://www.jmagick.org/).
+
+**Note for Mac users: be sure to add _--with-shared-lib-ext=".dylib"_ to the ./configure command for JMagick.**
+
+Finally, download or clone this repository and descend into its main folder.
 Execute the following command to build the application (the $ denotes the terminal and is not part of the command):
 
 ```
