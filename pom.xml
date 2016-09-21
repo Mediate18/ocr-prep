@@ -2,9 +2,28 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>mediate18</groupId>
 	<artifactId>ocr-prep</artifactId>
-	<version>0.0.2-SNAPSHOT</version>
+	<version>0.0.2</version>
 	<name>OCR-preprocessing</name>
 	<description>Tools for OCR preprocessing</description>
+	<url>https://github.com/Mediate18/ocr-prep</url>
+	<licenses>
+		<license>
+			<name>GNU General Public License, Version 3.0</name>
+			<url>https://www.gnu.org/licenses/gpl-3.0.en.html</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
+	<developers>
+		<developer>
+			<name>Matje van de Camp</name>
+			<email>m.vandecamp@let.ru.nl</email>
+			<organization>Radboud University</organization>
+			<organizationUrl>http://www.ru.nl</organizationUrl>
+		</developer>
+	</developers>
+	<scm>
+		<url>https://github.com/Mediate18/ocr-prep</url>
+	</scm>
 	<dependencies>
 		<dependency>
 			<groupId>jmagick</groupId>
