@@ -37,11 +37,12 @@ This will create a new folder labeled *target* in which you will find a file *oc
 The main application will apply all corrections (page splitting, skew correction, margin correction, line splitting) to each input image, with optional contrast correction, using the following command:
 
 ```
-$ java -Djava.library.path=/path/to/ImageMagick/ -jar ocr-prep-X.X.X-SNAPSHOT.jar [-c X] [--saveAll] /path/to/input
+$ java -Djava.library.path=/path/to/ImageMagick/ -jar ocr-prep-X.X.X-SNAPSHOT.jar [-b] [-c X] [--saveAll] /path/to/input
 ```
 
 The square brackets denote optional parameters, so remove these when entering the command.
-Replace the 'X' with a numerical value. A higher value means more contrast.
+By default the application outputs everything to a folder labeled *output*. You can use the '-b' option to use the basename of the input file instead.
+The '-c' option defines whether the contrast of the input images is adjusted. Replace the 'X' with a numerical value. A higher value means more contrast.
 The '--saveAll' option, when set, will cause all intermediate images to be saved to disk. If not set, only the final result will be saved (processed image and line images).
 The output is written to a folder labeled *output* in the same directory as the processed image.
 
