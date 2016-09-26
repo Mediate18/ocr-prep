@@ -37,6 +37,7 @@ public abstract class OCRTool {
 	protected int increaseContrast = 0;
 	protected boolean saveAllFiles = false;
 	protected List<String> generatedFiles = new ArrayList<String>();
+	protected boolean useBasenameAsOutputDir = false;
 
 	protected void start(String[] args) throws IOException, MagickException {
 		if (args.length > 1) {
@@ -45,6 +46,8 @@ public abstract class OCRTool {
 					this.increaseContrast = Integer.valueOf(args[i+1]);
 				else if (args[i].equals("--saveAll") || (args[i].equals("-s") && args[i+1].equals("true")))
 					this.saveAllFiles = true;
+				else if (args[i].equals("-b"))
+					this.useBasenameAsOutputDir = true;
 			}
 		}
 		String inputFileName = args[args.length-1];
@@ -60,26 +63,26 @@ public abstract class OCRTool {
 		    		String ext = FilenameUtils.getExtension(listOfFiles[i].getAbsolutePath());
 		    		if (ALLOWED.contains(ext))
 		    			if (ext.equals("zip"))
-		    				this.processZipFile(listOfFiles[i].getAbsolutePath());
+		    				this.processZipFile(listOfFiles[i].getAbsolutePath(), this.useBasenameAsOutputDir ? FilenameUtils.getBaseName(listOfFiles[i].getPath()) : "output");
 		    			else
-		    				this.processImageFile(listOfFiles[i].getAbsolutePath());
+		    				this.processImageFile(listOfFiles[i].getAbsolutePath(), this.useBasenameAsOutputDir ? FilenameUtils.getBaseName(listOfFiles[i].getPath()) : "output");
 		    	}
 		    }
 		} else {
 			String ext = FilenameUtils.getExtension(inputFileName);
     		if (ALLOWED.contains(ext))
     			if (ext.equals("zip"))
-    				this.processZipFile(inputFile.getAbsolutePath());
+    				this.processZipFile(inputFile.getAbsolutePath(), this.useBasenameAsOutputDir ? FilenameUtils.getBaseName(inputFile.getPath()) : "output");
     			else
-    				this.processImageFile(inputFile.getAbsolutePath());
+    				this.processImageFile(inputFile.getAbsolutePath(), this.useBasenameAsOutputDir ? FilenameUtils.getBaseName(inputFile.getPath()) : "output");
 		}
 	}
 	
-	protected void processImageFile(String path) throws MagickException, IOException {
-		run(new PageImage(path));
+	protected void processImageFile(String path, String outputDir) throws MagickException, IOException {
+		run(new PageImage(path, outputDir));
 	}
 
-	protected void processZipFile(String path) throws IOException, MagickException {
+	protected void processZipFile(String path, String outputDir) throws IOException, MagickException {
 		fis = new ZipFile(path);
 		String folder = FilenameUtils.getFullPath(path);
 		for (Enumeration<?> e = fis.entries(); e.hasMoreElements();) {
@@ -94,7 +97,7 @@ public abstract class OCRTool {
 				File outputFile = new File(filePath);
 				ImageIO.write(bf, ext, outputFile);
 				this.generatedFiles.add(filePath);
-				PageImage image = new PageImage(filePath);
+				PageImage image = new PageImage(filePath, outputDir);
 				image.setFileName(filePath);
 				run(image);
 			}

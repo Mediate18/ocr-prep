@@ -10,6 +10,7 @@ import java.awt.image.DataBufferByte;
 import java.io.File;
 import java.io.IOException;
 import java.util.BitSet;
+import java.util.logging.Logger;
 
 import javax.imageio.ImageIO;
 
@@ -29,20 +30,32 @@ import magick.MagickException;
 import magick.MagickImage;
 
 public class PageImage extends MagickImage {
+	private static final Logger LOGGER = Logger.getLogger( PageImage.class.getName() );
 	private static int MARGIN = 50;
 	private PageImage rlsaImage = null;
 	private Rectangle cropInfo = null;
+	private String outputDir = "output";
 
 	public PageImage(ImageInfo origInfo) throws MagickException {
 		super(origInfo);
 	}
 	
-	public PageImage(String fileName) throws MagickException {
+	public PageImage(String fileName, String outputDir) throws MagickException {
 		super(new ImageInfo(fileName));
+		this.outputDir = outputDir;
 	}
 	
-	public PageImage(MagickImage image) throws MagickException {
+	public PageImage(MagickImage image, String outputDir) throws MagickException {
 		super(new ImageInfo(image.getFileName()));
+		this.outputDir = outputDir;
+	}
+	
+	public String getOutputDir() {
+		return this.outputDir;
+	}
+	
+	public void setOutputDir(String dir) {
+		this.outputDir = dir;
 	}
 
 	public PageImage generateRLSAImage(boolean bidirectional) throws MagickException {
@@ -54,7 +67,7 @@ public class PageImage extends MagickImage {
             cvSaveImage(rlsaFileName, rlsa);
             image.release();
             rlsa.release();
-            rlsaImage = new PageImage(rlsaFileName);
+            rlsaImage = new PageImage(rlsaFileName, this.outputDir);
             rlsaImage.negateImage(1);
             rlsaImage.writeImage(new ImageInfo(rlsaFileName));
             if (cropInfo != null) {
@@ -187,12 +200,12 @@ public class PageImage extends MagickImage {
 		BufferedImage copyOfImage = this.crop(margins);
 		String fileName = this.generateFilename("cropped");
 	    ImageIO.write(copyOfImage, FilenameUtils.getExtension(fileName), new File(fileName));
-		return new PageImage(fileName);
+		return new PageImage(fileName, this.outputDir);
 	}
 	
 	public PageImage rotate(double deg) throws MagickException {
 		MagickImage rotated = this.rotateImage(deg); // rotate image
-		return new PageImage(rotated);
+		return new PageImage(rotated, this.outputDir);
 	}
 	
 	public PageImage rotateAndSave(double deg) throws MagickException {
@@ -201,13 +214,14 @@ public class PageImage extends MagickImage {
 		String fileName = this.generateFilename("rotated_"+degStr);
 		rotated.setFileName(fileName); //give new location
 		rotated.writeImage(new ImageInfo(this.getFileName())); //save
-		return new PageImage(fileName);
+		return new PageImage(fileName, this.outputDir);
 	}
 	
 	public PageImage[] splitVertical2() throws MagickException, IOException {
 		ImageSplitter splitter = new ImageSplitter();
 		PageImage[] pages = splitter.splitVertical(this); // split image
 		for (int i = 0; i < pages.length; i++) {
+			pages[i].setOutputDir(this.outputDir);
 			pages[i].setFileName(this.generateFilename("split"+i)); //give new location
 		}
 		return pages;
@@ -217,6 +231,7 @@ public class PageImage extends MagickImage {
 		ImageSplitter splitter = new ImageSplitter();
 		PageImage[] pages = splitter.splitVertical(this); // split image
 		for (int i = 0; i < pages.length; i++) {
+			pages[i].setOutputDir(this.outputDir);
 			pages[i].setFileName(this.generateFilename("split"+i)); //give new location
 			pages[i].writeImage(new ImageInfo(this.getFileName())); //save
 		}
@@ -224,7 +239,9 @@ public class PageImage extends MagickImage {
 	}
 	
 	public BufferedImage toBufferedImage() throws MagickException, IOException {
-		return ImageIO.read(new File(this.getFileName()));
+		String fileName = this.getFileName();
+		LOGGER.info("Opening file: "+fileName);
+		return ImageIO.read(new File(fileName));
 	}
 	
 	private String extension() throws MagickException {
@@ -253,8 +270,8 @@ public class PageImage extends MagickImage {
 		String basename = FilenameUtils.getBaseName(fileName);
 		String ext = FilenameUtils.getExtension(fileName);
 		String baseDir = FilenameUtils.getFullPathNoEndSeparator(fileName);
-		if (!baseDir.endsWith("output")) {
-			baseDir += "/output";
+		if (!baseDir.endsWith(this.outputDir)) {
+			baseDir += "/"+this.outputDir;
 			File outDir = new File(baseDir);
 			if (!outDir.exists())
 				outDir.mkdirs();
