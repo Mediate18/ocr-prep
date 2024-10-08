@@ -1,3 +1,5 @@
+***As of October 8, 2024 this repository is archived because it is old and not used anymore.***
+
 # OCR image preparation
 
 This application offers some basic functionality to prepare images for further processing with OCR (Optical Character Recognition) software. It is specifically intended for preprocessing of scanned book pages and runs on single image files (PNG or JPEG), whole directories, or even a Zip file containing images.
